@@ -13,7 +13,7 @@ program
 program
 	.command('create <project-name>')
 	.description('创建新项目')
-	.option('-o, --option <options>', 'Use specified npm client when installing dependencies')
+	.option('-p, --page <pageName>', '创建子站')
 	.action((projectName, options) => {
 		require('./create')(projectName, cleanArgs(options))
 	})

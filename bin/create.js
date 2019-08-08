@@ -1,13 +1,10 @@
 const ora = require('ora')
-const path = require('path')
 const chalk = require('chalk')
 const inquirer = require('inquirer')
 const clone = require('download-git-repo')
-const { execSync } = require('child_process')
 
-module.exports = async (name, cmd) => {
-	const projectName = path.relative('../', process.cwd())
-    const { template } = await inquirer.prompt([
+const createProject = async (name) => {
+	const { template } = await inquirer.prompt([
 		{
 			name: 'template',
 			type: 'list',
@@ -36,5 +33,17 @@ module.exports = async (name, cmd) => {
 		)
 	} else {
 		console.log(chalk.yellow('不实用任何模版'))
+	}
+}
+
+const createPage = async = (name) => {
+	console.log(chalk.yellow('创建子站', name))
+}
+
+module.exports = async (name, cmd) => {
+	if (cmd.page) {
+		createPage(cmd.page)
+	} else {
+		createProject(name)
 	}
 }
