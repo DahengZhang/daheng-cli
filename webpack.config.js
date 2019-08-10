@@ -5,17 +5,19 @@ const { VueLoaderPlugin } = require('vue-loader')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 const isDev = process.env.NODE_ENV == 'development'
-const files = glob.sync('./src/**/index.js').map(item => {
+const buildPath = getArgv('path')
+const files = glob.sync(buildPath ? `./src/**/${buildPath}/**/index.js` : './src/**/index.js').map(item => {
 	return item.match(/\.\/src\/(\S*\/index)\.js/)
 			&& item.match(/\.\/src\/(\S*\/index)\.js/)[1]
 			|| 'index'
 })
+const { entry, htmlPlugins } = getEntry()
 function getEntry() {
 	let entry = {}
-	let html = []
+    let htmlPlugins = []
 	for (let i = 0; i < files.length; i++) {
 		entry[files[i]] = [path.resolve(__dirname, 'src', files[i] + '.js')]
-		html.push(new HtmlWebpackPlugin({
+		htmlPlugins.push(new HtmlWebpackPlugin({
 			template: path.resolve(__dirname, 'src', files[i] + '.html'),
 			filename: files[i] + '.html',
 			inject: true,
@@ -28,14 +30,21 @@ function getEntry() {
 	}
 	return {
 		entry,
-		html
+		htmlPlugins
 	}
+}
+function getArgv(name) {
+	const argvs = process.argv.find(item => {
+		return item.indexOf(`--${name}`) !== -1
+	}) || '';
+	return argvs.split('=').length < 2
+				? false : argvs.split('=')[1];
 }
 
 module.exports = {
 	mode: process.env.NODE_ENV,
 	devtool: isDev ? 'eval' : 'source-maps',
-	entry: getEntry().entry,
+	entry,
     output: {
         path: path.resolve(__dirname, 'public/'),
         publicPath: '/',
@@ -76,6 +85,6 @@ module.exports = {
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
 		new VueLoaderPlugin(),
-		...getEntry().html
+		...htmlPlugins
     ]
 }
