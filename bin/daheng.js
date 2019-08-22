@@ -9,13 +9,22 @@ program
 	.version(require('../package.json').version)
 	.usage('<command> [options]')
 
-// create 命令区块
+// init 命令区块
 program
-	.command('create <project-name>')
+	.command('init <project-name>')
 	.description('创建新项目')
-	.option('-p, --page <pageName>', '创建子站')
 	.action((projectName, options) => {
-		require('./create')(projectName, cleanArgs(options))
+		require('./init')(projectName, cleanArgs(options))
+	})
+
+// config 命令区块
+program
+	.command('config <control>')
+	.description('脚手架配置')
+	.option('-n, --name <warehouseName>', '仓库名称')
+	.option('-f, --find <search>', '查找配置')
+	.action((control, options) => {
+		require('./config')(control, cleanArgs(options))
 	})
 
 // 用户输入位置命令时显示帮助文档，并提示错误

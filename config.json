@@ -1,0 +1,9 @@
+{
+	"default": {
+		"url": "https://www.baidu.com",
+		"branchs": [
+			"master",
+			"template"
+		]
+	}
+}
